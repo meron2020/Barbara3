@@ -47,3 +47,5 @@ def do_turn(game):
     #     attack_iceberg(game, iceberg)
 
     upgrade(game)
+
+print("9")
