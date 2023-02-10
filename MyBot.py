@@ -23,9 +23,9 @@ def do_turn(game):
 
     # Defends capital if needed
     if not check_if_C_safe(game.get_enemy_penguin_groups()):
-        icebergs_to_send = check_who_should_send_to_capital()
+        icebergs_to_send = icebergs_to_send_to_capital()
         for iceberg in icebergs_to_send:
-            send_able_defense(iceberg, our_capital, )
+            send_able_defense(iceberg, our_capital)
 
     # Checks if we should attack capital and attacks.
     capital_should_be_attacked = rate_enemy_C(game, distances_from_enemy_capital, sorted_enemies_from_enemy_capital)
@@ -37,7 +37,7 @@ def do_turn(game):
     for iceberg in icebergs_needing_defense:
         icebergs_to_send_from = check_who_should_send_to_iceberg(iceberg)
         for sending_iceberg in icebergs_to_send_from:
-            send_able_defense(sending_iceberg, iceberg, )
+            send_able_defense(sending_iceberg, iceberg)
 
     # Attacks icebergs we want
     # The function attack_by_rating already includes the code below within it

@@ -5,7 +5,7 @@ from penguin_game import *
 # 2) If the number of penguins in the group is less than the number of
 # penguins currently on the iceberg + the amount of penguins that will be added by the time they arrive + 1
 def check_if_C_safe(enemy_groups):
-    if enemy_groups == []:
+    if not enemy_groups:
         return True
     for enemy_group in enemy_groups:
         if enemy_group.destination.is_icepital:
