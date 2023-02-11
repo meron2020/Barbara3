@@ -5,19 +5,24 @@ from send_able import send_able_defense
 # Function returns list of dictionaries of surrounding icebergs that should send help.
 # The key is the iceberg and the value is the amount they should send.
 # If needed it should ask for help from all our icebergs.
-def icebergs_to_send_to_capital(game, our_icebergs_sorted):
-    our_capital = game.get_my_icepital_icebergs()[0]
-    defending_icebergs = []
+def count_attackers_against_iceberg(game, iceberg):
     last_attacker_arrival = 0
     enemy_attackers = 0
-    defenders = our_capital.penguin_amount
-
     # Counts how many are attacking the capital
     for attacker_group in game.get_enemy_penguin_groups():
-        if attacker_group.destination == our_capital:
+        if attacker_group.destination == iceberg:
             enemy_attackers += attacker_group.penguin_amount
             if attacker_group.turns_till_arrival > last_attacker_arrival:
                 last_attacker_arrival = attacker_group.turns_till_arrival
+
+    return enemy_attackers, last_attacker_arrival
+
+
+def icebergs_to_send_to_capital(game, our_icebergs_sorted):
+    our_capital = game.get_my_icepital_icebergs()[0]
+    defending_icebergs = []
+    enemy_attackers, last_attacker_arrival = count_attackers_against_iceberg(game, our_capital)
+    defenders = our_capital.penguin_amount
 
     current_iceberg = our_icebergs_sorted[0]
     # Iterates through our icebergs by distance and adds the amount the need to send according
@@ -50,7 +55,18 @@ def find_two_closest_friendly_icebergs(iceberg_to_defend, game):
     return closest_icebergs
 
 
-# Function returns list of surrounding icebergs that should send help. Maximum helpers should be 2 for now.
+# Function returns list of dictionaries of surrounding icebergs that should send help.
+# The key is the iceberg and the value is the amount they should send. Maximum helpers should be 2 for now.
 # We can change later if needed.
-def check_who_should_send_to_iceberg(iceberg_to_defend):
-    return
+def check_who_should_send_to_iceberg(iceberg_to_defend, game):
+    closest_icebergs = find_two_closest_friendly_icebergs(iceberg_to_defend, game)
+    defenders = 0
+    attackers = count_attackers_against_iceberg(game, iceberg_to_defend)[0]
+    defending_icebergs = []
+    for current_iceberg in closest_icebergs:
+        if current_iceberg.penguin_amount > attackers - defenders:
+            defending_icebergs.append({current_iceberg: attackers - defenders})
+        else:
+            defending_icebergs.append({current_iceberg: current_iceberg.penguin_amount})
+
+    return defending_icebergs
